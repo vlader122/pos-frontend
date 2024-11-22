@@ -5,5 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './formulario.component.html'
 })
 export class FormularioComponent {
-
 }

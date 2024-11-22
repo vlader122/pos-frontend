@@ -1,19 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
+
 import { FormularioRoutingModule } from './formulario-routing.module';
+import { BotonComponent } from './boton/boton.component';
 import { FormularioComponent } from './formulario.component';
 import { TituloComponent } from './titulo/titulo.component';
-import { BotonComponent } from "./boton/boton.component";
 
 
 @NgModule({
-    imports: [
+  declarations: [FormularioComponent,BotonComponent],
+  imports: [
     CommonModule,
     FormularioRoutingModule,
-    ButtonModule,
-    BotonComponent
-],
-    declarations: [FormularioComponent, TituloComponent]
+    TituloComponent
+  ]
 })
 export class FormularioModule { }
