@@ -1,11 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RegistroComponent } from './registro/registro.component';
 
 @NgModule({
   imports: [RouterModule.forChild([
-    { path: 'formulario', loadChildren: () => import('./formulario/formulario.module').then(m=>m.FormularioModule)},
-    { path: 'registro', component: RegistroComponent},
+    { path: 'clientes', loadChildren: () => import('./clientes/clientes.module').then(m=>m.ClientesModule)},
   ])],
   exports: [RouterModule]
 })
