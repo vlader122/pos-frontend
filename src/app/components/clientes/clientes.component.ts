@@ -14,9 +14,8 @@ export class ClientesComponent implements OnInit{
     clientes:Clientes [] = [];
     cliente: Clientes = new Clientes;
     cols = [];
-    selectedProducts = [];
     clientesDialog = false;
-    deleteProductDialog = false;
+    modalEliminacionCliente = false;
     deleteProductsDialog = false;
     operacion: string = '';
     formulario: FormGroup;
@@ -54,10 +53,18 @@ export class ClientesComponent implements OnInit{
         this.cliente.Direccion = this.formulario.value.direccion;
         this.cliente.Telefono = this.formulario.value.telefono;
 
-        this._clientesService.guardarCliente(this.cliente).subscribe( dato => {
-            this.cargarDatos();
-        });
-        this._messageService.add({ severity: 'success', summary: 'Correcto', detail: 'Cliente actualizado', life:3000 });
+        if(this.operacion == "Nuevo"){
+            this._clientesService.guardarCliente(this.cliente).subscribe( dato => {
+                this.cargarDatos();
+            });
+            this._messageService.add({ severity: 'success', summary: 'Correcto', detail: 'Cliente Nuevo', life:3000 });
+        } else{
+            this._clientesService.actualizarCliente(this.cliente).subscribe( dato => {
+                this.cargarDatos();
+            });
+            this._messageService.add({ severity: 'success', summary: 'Correcto', detail: 'Cliente Actualizado', life:3000 });
+        }
+
         this.clientesDialog = false;
         this.formulario.reset();
     }
@@ -65,5 +72,34 @@ export class ClientesComponent implements OnInit{
     ocultar(){
         this.formulario.reset();
         this.clientesDialog = false;
+    }
+
+    feliminar(cliente){
+        this.cliente.ClienteId = cliente.clienteId;
+        this.cliente.Nombres = cliente.nombres;
+        this.cliente.Apellidos = cliente.apellidos;
+
+        this.modalEliminacionCliente = true;
+
+    }
+
+    eliminar(id){
+        this.modalEliminacionCliente = false;
+        this._clientesService.eliminarCliente(id).subscribe(dato =>{
+            this.cargarDatos();
+        });
+        this._messageService.add({ severity: 'warn', summary: 'Correcto', detail: 'Cliente eliminado', life:3000 });
+    }
+
+    editarCliente(cliente){
+        this.cliente.ClienteId = cliente.clienteId;
+        this.operacion = "Editar";
+        this.clientesDialog = true;
+        this.formulario.patchValue({
+            nombres: cliente.nombres,
+            apellidos: cliente.apellidos,
+            direccion: cliente.direccion,
+            telefono: cliente.telefono
+        })
     }
 }

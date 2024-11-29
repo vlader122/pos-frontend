@@ -17,4 +17,12 @@ export class ClientesService {
     guardarCliente(cliente: Clientes): Observable<any> {
         return this._httpCliente.post<void>(this.ruta,cliente);
     }
+
+    eliminarCliente(id:number): Observable<any>{
+        return this._httpCliente.delete<any>(this.ruta + '/'+id);
+    }
+
+    actualizarCliente(cliente: Clientes): Observable<any>{
+        return this._httpCliente.put<void>(this.ruta, cliente);
+    }
 }
