@@ -42,7 +42,7 @@ export class ClientesComponent implements OnInit{
     }
 
     cargarDatos(){
-        this._clientesService.obtenerClientes().subscribe( dato => {
+        this._clientesService.obtener().subscribe( dato => {
             this.clientes = dato
         })
     }
@@ -54,12 +54,12 @@ export class ClientesComponent implements OnInit{
         this.cliente.Telefono = this.formulario.value.telefono;
 
         if(this.operacion == "Nuevo"){
-            this._clientesService.guardarCliente(this.cliente).subscribe( dato => {
+            this._clientesService.guardar(this.cliente).subscribe( dato => {
                 this.cargarDatos();
             });
             this._messageService.add({ severity: 'success', summary: 'Correcto', detail: 'Cliente Nuevo', life:3000 });
         } else{
-            this._clientesService.actualizarCliente(this.cliente).subscribe( dato => {
+            this._clientesService.actualizar(this.cliente).subscribe( dato => {
                 this.cargarDatos();
             });
             this._messageService.add({ severity: 'success', summary: 'Correcto', detail: 'Cliente Actualizado', life:3000 });
@@ -85,7 +85,7 @@ export class ClientesComponent implements OnInit{
 
     eliminar(id){
         this.modalEliminacionCliente = false;
-        this._clientesService.eliminarCliente(id).subscribe(dato =>{
+        this._clientesService.eliminar(id).subscribe(dato =>{
             this.cargarDatos();
         });
         this._messageService.add({ severity: 'warn', summary: 'Correcto', detail: 'Cliente eliminado', life:3000 });

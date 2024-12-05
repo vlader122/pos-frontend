@@ -2,19 +2,19 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Clientes } from '../models/Clientes';
+import { Categorias } from '../models/Categorias';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClientesService {
-    ruta = `${environment.rutaBackend}/Cliente`;
+export class CategoriasService {
+    ruta = `${environment.rutaBackend}/Categoria`;
     constructor(private _httpCliente:HttpClient) { }
     obtener(): Observable<any> {
-        return this._httpCliente.get<Clientes>(this.ruta);
+        return this._httpCliente.get<Categorias>(this.ruta);
     }
 
-    guardar(cliente: Clientes): Observable<any> {
+    guardar(cliente: Categorias): Observable<any> {
         return this._httpCliente.post<void>(this.ruta,cliente);
     }
 
@@ -22,7 +22,7 @@ export class ClientesService {
         return this._httpCliente.delete<any>(this.ruta + '/'+id);
     }
 
-    actualizar(cliente: Clientes): Observable<any>{
+    actualizar(cliente: Categorias): Observable<any>{
         return this._httpCliente.put<void>(this.ruta, cliente);
     }
 }

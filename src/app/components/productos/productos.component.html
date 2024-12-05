@@ -1,0 +1,103 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <h2> Administrar Productos</h2>
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="abrirDialog()"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="productos" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','country.name','representative.name','status']" [paginator]="true" [rowsPerPageOptions]="[5,10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} de {last} del total {totalRecords} registros" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="code">Producto ID <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="name">Descripcion <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="name">Cantidad <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="name">Precio <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="name">Categoria <p-sortIcon field="name"></p-sortIcon></th>
+
+                        <th pSortableColumn="inventoryStatus">Operaciones <p-sortIcon field="inventoryStatus"></p-sortIcon></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-producto>
+                    <tr>
+                        <td style="width:14%; min-width:10rem;">
+                            {{ producto.productoId }}
+                        </td>
+                        <td style="width:60%; min-width:10rem;">
+                            {{ producto.descripcion }}
+                        </td>
+                        <td style="width:60%; min-width:10rem;">
+                            {{ producto.cantidad }}
+                        </td>
+                        <td style="width:60%; min-width:10rem;">
+                            {{ producto.precio }}
+                        </td>
+                        <td style="width:60%; min-width:10rem;">
+                            {{ producto.categoriaId }}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editarProducto(producto)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="feliminar(producto)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="productosDialog" [style]="{width: '450px'}" [header]="operacion + ' producto' " [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+
+                <form [formGroup]="formulario">
+                    <div class="col-8 field">
+                        <label for="name">Descripcion</label>
+                        <input formControlName="descripcion" pInputText id="descripcion" type="text"/>
+                    </div>
+                    <div class="col-8 field">
+                        <label for="name">Cantidad</label>
+                        <input formControlName="cantidad" pInputText id="cantidad" type="number"/>
+                    </div>
+                    <div class="col-8 field">
+                        <label for="name">Precio</label>
+                        <input formControlName="precio" (blur)="tranformarCurrency($event)" pInputText id="precio" type="text"/>
+                    </div>
+                    <div class="col-8 field">
+                        <label for="name">Categoria</label>
+                        <p-dropdown
+                            formControlName="categoriaId"
+                            [options]="categorias"
+                            optionValue="categoriaId"
+                            optionLabel="descripcion" />
+                    </div>
+
+                </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="ocultar()"></button>
+                <button pButton [disabled]="!formulario.valid" label="Save" icon="pi pi-check" class="p-button-text" (click)="guardar()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="modalEliminacionProducto" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="producto">Esta seguro en eliminar al producto <b>{{ producto.Descripcion }}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteProductDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="eliminar(producto.ProductoId)"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>
