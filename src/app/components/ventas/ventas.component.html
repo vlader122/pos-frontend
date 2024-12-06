@@ -1,0 +1,109 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <h2> Administrar Ventas</h2>
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="abrirDialog()"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="ventas" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','country.name','representative.name','status']" [paginator]="true" [rowsPerPageOptions]="[5,10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} de {last} del total {totalRecords} registros" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="code">Venta ID <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="name">Factura <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="name">Fecha <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="name">Total <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="name">Cliente <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="inventoryStatus">Operaciones <p-sortIcon field="inventoryStatus"></p-sortIcon></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-venta>
+                    <tr>
+                        <td style="width:14%; min-width:10rem;">
+                            {{ venta.ventaId }}
+                        </td>
+                        <td style="width:60%; min-width:10rem;">
+                            {{ venta.factura }}
+                        </td>
+                        <td style="width:60%; min-width:10rem;">
+                            {{ venta.fecha }}
+                        </td>
+                        <td style="width:60%; min-width:10rem;">
+                            {{ venta.total }}
+                        </td>
+                        <td style="width:60%; min-width:10rem;">
+                            {{ venta.clienteId }}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editarVenta(venta)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="feliminar(venta)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="ventasDialog" [style]="{width: '1000px'}" [header]="operacion + ' venta' " [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+
+                <form [formGroup]="formulario">
+                    <div class="col-4 field">
+                        <label for="name">Seleccione un cliente</label>
+                        <p-autoComplete
+                            formControlName="clienteId"
+                            [suggestions]="clientesFiltrados"
+                            (completeMethod)="clientesFiltro($event)"
+                            field="nombres" />
+                    </div>
+                    <div class="col-4 field">
+                        <label for="name">Factura</label>
+                        <input formControlName="descripcion" pInputText id="descripcion" type="text"/>
+                    </div>
+                    <div class="col-8 field">
+                        <label for="name">Seleccione un producto</label>
+                        <p-autoComplete
+                            formControlName="productoId"
+                            [suggestions]="productosFiltrados"
+                            (completeMethod)="productosFiltro($event)"
+                            field="descripcion" />
+                    </div>
+                    <div class="col-8 field">
+                        <label for="name">Cantidad</label>
+                        <input formControlName="cantidad" pInputText id="cantidad" type="number"/>
+                    </div>
+                    <div class="col-8 field">
+                        <label for="name">Subtotal</label>
+                        <input formControlName="descripcion" pInputText id="descripcion" type="text"/>
+                    </div>
+                </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="ocultar()"></button>
+                <button pButton [disabled]="!formulario.valid" label="Save" icon="pi pi-check" class="p-button-text" (click)="guardar()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="modalEliminacionVenta" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="venta">Esta seguro en eliminar al venta <b>{{ venta.Descripcion }}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteProductDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="eliminar(venta.VentaId)"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>
