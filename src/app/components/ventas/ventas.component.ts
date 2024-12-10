@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { Clientes } from 'src/app/models/Clientes';
+import { DetalleVentas } from 'src/app/models/DetalleVentas';
 import { Productos } from 'src/app/models/Productos';
 import { Ventas } from 'src/app/models/Ventas';
 import { ClientesService } from 'src/app/services/clientes.service';
@@ -21,7 +22,8 @@ export class VentasComponent {
     clientesFiltrados: any[] | undefined;
     productos: Productos [] = [];
     productosFiltrados: any[] | undefined;
-    cols = [];
+
+    detalleVentas: DetalleVentas[] = [];
     ventasDialog = false;
     modalEliminacionVenta = false;
     deleteProductsDialog = false;
@@ -36,10 +38,10 @@ export class VentasComponent {
         private _productosService: ProductosService
     ){
         this.formulario = new FormGroup({
-            descripcion: new FormControl('',[Validators.required]),
+            clienteId: new FormControl('',[Validators.required]),
+            productoId: new FormControl('',[Validators.required]),
             cantidad: new FormControl('',[Validators.required]),
-            precio: new FormControl('',[Validators.required]),
-            categoriaId: new FormControl('',[Validators.required]),
+            subtotal: new FormControl('',[Validators.required]),
         })
     }
 
@@ -147,5 +149,20 @@ export class VentasComponent {
         }
 
         this.productosFiltrados = filtrados;
+    }
+
+    calcularSubtotal(){
+        const cantidad = this.formulario.value.cantidad;
+        const precio = this.formulario.value.productoId.precio;
+
+        const subtotal = cantidad * precio;
+
+        this.formulario.patchValue({ subtotal:subtotal});
+    }
+    agregarDetalle(){
+        console.log(this.formulario);
+        this.detalleVentas.push(this.formulario.value);
+        console.log(this.detalleVentas);
+
     }
 }

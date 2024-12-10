@@ -12,7 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { VentasComponent } from './ventas.component';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-
+import { DividerModule } from 'primeng/divider';
 
 
 @NgModule({
@@ -28,7 +28,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
     InputTextModule,
     ReactiveFormsModule,
     DropdownModule,
-    AutoCompleteModule
+    AutoCompleteModule,
+    DividerModule
   ]
 })
 export class VentasModule { }

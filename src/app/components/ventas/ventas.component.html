@@ -15,7 +15,7 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="ventas" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','country.name','representative.name','status']" [paginator]="true" [rowsPerPageOptions]="[5,10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} de {last} del total {totalRecords} registros" selectionMode="multiple" [rowHover]="true" dataKey="id">
+            <p-table #dt [value]="ventas" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','country.name','representative.name','status']" [paginator]="true" [rowsPerPageOptions]="[5,10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} de {last} del total {totalRecords} registros" selectionMode="multiple" [rowHover]="true" dataKey="id">
                 <ng-template pTemplate="header">
                     <tr>
                         <th pSortableColumn="code">Venta ID <p-sortIcon field="code"></p-sortIcon></th>
@@ -56,9 +56,8 @@
 
         <p-dialog [(visible)]="ventasDialog" [style]="{width: '1000px'}" [header]="operacion + ' venta' " [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
-
-                <form [formGroup]="formulario">
-                    <div class="col-4 field">
+                <div class="grid">
+                    <div class="col-6 field">
                         <label for="name">Seleccione un cliente</label>
                         <p-autoComplete
                             formControlName="clienteId"
@@ -66,33 +65,79 @@
                             (completeMethod)="clientesFiltro($event)"
                             field="nombres" />
                     </div>
-                    <div class="col-4 field">
+                    <div class="col-3 field">
                         <label for="name">Factura</label>
                         <input formControlName="descripcion" pInputText id="descripcion" type="text"/>
                     </div>
-                    <div class="col-8 field">
-                        <label for="name">Seleccione un producto</label>
-                        <p-autoComplete
-                            formControlName="productoId"
-                            [suggestions]="productosFiltrados"
-                            (completeMethod)="productosFiltro($event)"
-                            field="descripcion" />
-                    </div>
-                    <div class="col-8 field">
-                        <label for="name">Cantidad</label>
-                        <input formControlName="cantidad" pInputText id="cantidad" type="number"/>
-                    </div>
-                    <div class="col-8 field">
-                        <label for="name">Subtotal</label>
-                        <input formControlName="descripcion" pInputText id="descripcion" type="text"/>
-                    </div>
-                </form>
-            </ng-template>
+                </div>
+                <div class="grid">
+                <div class="col-5 flex align-items-center justify-content-center">
+                    <form [formGroup]="formulario">
 
+                        <div class="col-8 field">
+                            <label for="name">Seleccione un producto</label>
+                            <p-autoComplete
+                                formControlName="productoId"
+                                [suggestions]="productosFiltrados"
+                                (completeMethod)="productosFiltro($event)"
+                                field="descripcion" />
+                        </div>
+                        <div class="col-8 field">
+                            <label for="name">Cantidad</label>
+                            <input formControlName="cantidad" pInputText id="cantidad" type="number" (change)="calcularSubtotal()"/>
+                        </div>
+                        <div class="col-8 field">
+                            <label for="name">Subtotal</label>
+                            <input formControlName="subtotal" pInputText id="subtotal" type="text" [readOnly]="true"/>
+                        </div>
+                        <button pButton pRipple label="Añadir" class="p-button-text" (click)="agregarDetalle()"></button>
+                    </form>
+                </div>
+                <div>
+                    <p-divider layout="vertical"></p-divider>
+                </div>
+                <div class="col-6 align-items-center justify-content-center">
+                    <h5>Detalle de Venta</h5>
+                <p-table #dt [value]="detalleVentas" responsiveLayout="scroll" [scrollable]="true" scrollHeight="200px">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="code">Producto <p-sortIcon field="code"></p-sortIcon></th>
+                            <th pSortableColumn="code">Precio <p-sortIcon field="code"></p-sortIcon></th>
+                            <th pSortableColumn="name">Cantidad <p-sortIcon field="name"></p-sortIcon></th>
+                            <th pSortableColumn="name">Subtotal <p-sortIcon field="name"></p-sortIcon></th>
+                            <th pSortableColumn="inventoryStatus">Operaciones <p-sortIcon field="inventoryStatus"></p-sortIcon></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-detalleventa>
+                        <tr>
+                            <td style="width:14%; min-width:10rem;">
+                                {{ detalleventa.productoId.descripcion }}
+                            </td>
+                            <td style="width:60%; min-width:10rem;">
+                                {{ detalleventa.productoId.precio }}
+                            </td>
+                            <td style="width:60%; min-width:10rem;">
+                                {{ detalleventa.cantidad }}
+                            </td>
+                            <td style="width:60%; min-width:10rem;">
+                                {{ detalleventa.subtotal }}
+                            </td>
+                            <td>
+                                <div class="flex">
+                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="feliminar(venta)"></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                </div>
+            </div>
+            </ng-template>
             <ng-template pTemplate="footer">
                 <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="ocultar()"></button>
                 <button pButton [disabled]="!formulario.valid" label="Save" icon="pi pi-check" class="p-button-text" (click)="guardar()"></button>
             </ng-template>
+
         </p-dialog>
 
         <p-dialog [(visible)]="modalEliminacionVenta" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
