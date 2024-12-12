@@ -8,7 +8,7 @@ import { Ventas } from '../models/Ventas';
   providedIn: 'root'
 })
 export class VentasService {
-    ruta = `${environment.rutaBackend}/Venta`;
+    ruta = `${environment.rutaBackend}/api/Venta`;
     constructor(private _httpCliente:HttpClient) { }
     obtener(): Observable<any> {
         return this._httpCliente.get<Ventas>(this.ruta);

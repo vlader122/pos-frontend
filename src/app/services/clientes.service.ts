@@ -8,7 +8,7 @@ import { Clientes } from '../models/Clientes';
   providedIn: 'root'
 })
 export class ClientesService {
-    ruta = `${environment.rutaBackend}/Cliente`;
+    ruta = `${environment.rutaBackend}/api/Cliente`;
     constructor(private _httpCliente:HttpClient) { }
     obtener(): Observable<any> {
         return this._httpCliente.get<Clientes>(this.ruta);

@@ -8,7 +8,7 @@ import { Categorias } from '../models/Categorias';
   providedIn: 'root'
 })
 export class CategoriasService {
-    ruta = `${environment.rutaBackend}/Categoria`;
+    ruta = `${environment.rutaBackend}/api/Categoria`;
     constructor(private _httpCliente:HttpClient) { }
     obtener(): Observable<any> {
         return this._httpCliente.get<Categorias>(this.ruta);

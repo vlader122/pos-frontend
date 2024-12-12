@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   app: 'POS',
-  rutaBackend: 'http://localhost:5092/api'
+  rutaBackend: 'http://localhost:5092',
+  token: '',
 };
 
 /*
