@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { Clientes } from 'src/app/models/Clientes';
@@ -23,13 +23,17 @@ export class VentasComponent {
     productos: Productos [] = [];
     productosFiltrados: any[] | undefined;
 
-    detalleVentas: DetalleVentas[] = [];
+    detalleVentas: any[] = [];
+    fdetalle: DetalleVentas[] = [];
+
     ventasDialog = false;
     modalEliminacionVenta = false;
     deleteProductsDialog = false;
     operacion: string = '';
     formulario: FormGroup;
+
     inputFormateado;
+    total: number = 0;
 
     constructor(
         private _messageService: MessageService,
@@ -38,15 +42,23 @@ export class VentasComponent {
         private _productosService: ProductosService
     ){
         this.formulario = new FormGroup({
-            clienteId: new FormControl('',[Validators.required]),
-            productoId: new FormControl('',[Validators.required]),
-            cantidad: new FormControl('',[Validators.required]),
-            subtotal: new FormControl('',[Validators.required]),
-        })
+            factura: new FormControl(),
+            clienteId: new FormControl,
+            productoId: new FormControl,
+            subtotal: new FormControl,
+            cantidad: new FormControl,
+
+            fecha: new FormControl(new Date().toISOString().split('T')[0], [Validators.required]),
+            total: new FormControl(),
+        });
     }
 
     ngOnInit(): void {
         this.cargarDatos();
+    }
+
+    get detalle(): FormArray {
+        return this.formulario.get('detalle') as FormArray;
     }
 
     abrirDialog(){
@@ -75,6 +87,19 @@ export class VentasComponent {
     }
 
     guardar(){
+        this.fdetalle = this.detalleVentas.map(
+            item => {
+                return {
+                    ProductoId: item.productoId.productoId,
+                    Cantidad: item.cantidad,
+                    Subtotal: item.subtotal
+                } as DetalleVentas; });
+        this.venta.ClienteId = this.formulario.value.clienteId.clienteId;
+        this.venta.Factura = this.formulario.value.factura;
+        this.venta.Fecha = this.formulario.value.fecha;
+        this.venta.Total = this.total;
+        this.venta.Detalle = this.fdetalle;
+
         if(this.operacion == "Nuevo"){
             this._ventasService.guardar(this.venta).subscribe( dato => {
                 this.cargarDatos();
@@ -89,6 +114,8 @@ export class VentasComponent {
 
         this.ventasDialog = false;
         this.formulario.reset();
+        this.detalleVentas = [];
+        this.total = 0;
     }
 
     ocultar(){
@@ -159,10 +186,30 @@ export class VentasComponent {
 
         this.formulario.patchValue({ subtotal:subtotal});
     }
-    agregarDetalle(){
-        console.log(this.formulario);
-        this.detalleVentas.push(this.formulario.value);
-        console.log(this.detalleVentas);
 
+    agregarDetalle(){
+
+        this.detalleVentas.push(this.formulario.value);
+        this.calcularTotal(this.formulario.value.subtotal);
+    }
+
+    feliminarDetalle(detalleVentas) {
+        // Encontrar el índice del elemento a eliminar
+        const index = this.detalleVentas.findIndex(
+            detalle => detalle.id === detalleVentas.id
+        );
+        // Verificar si el índice es válido
+        if (index !== -1) {
+            // Eliminar el elemento en la posición encontrada
+            this.detalleVentas.splice(index, 1);
+        }
+    }
+
+    calcularTotal(subtotal){
+        this.total = this.total + subtotal;
+    }
+
+    guardarVenta(){
+        console.log('Datos de venta a guardar:', this.formulario.value);
     }
 }

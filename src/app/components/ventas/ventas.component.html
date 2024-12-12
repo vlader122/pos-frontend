@@ -56,6 +56,7 @@
 
         <p-dialog [(visible)]="ventasDialog" [style]="{width: '1000px'}" [header]="operacion + ' venta' " [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
+                <form [formGroup]="formulario">
                 <div class="grid">
                     <div class="col-6 field">
                         <label for="name">Seleccione un cliente</label>
@@ -67,13 +68,11 @@
                     </div>
                     <div class="col-3 field">
                         <label for="name">Factura</label>
-                        <input formControlName="descripcion" pInputText id="descripcion" type="text"/>
+                        <input formControlName="factura" pInputText id="factura" type="text"/>
                     </div>
                 </div>
                 <div class="grid">
-                <div class="col-5 flex align-items-center justify-content-center">
-                    <form [formGroup]="formulario">
-
+                <div class="col-5 align-items-center justify-content-center">
                         <div class="col-8 field">
                             <label for="name">Seleccione un producto</label>
                             <p-autoComplete
@@ -91,7 +90,6 @@
                             <input formControlName="subtotal" pInputText id="subtotal" type="text" [readOnly]="true"/>
                         </div>
                         <button pButton pRipple label="Añadir" class="p-button-text" (click)="agregarDetalle()"></button>
-                    </form>
                 </div>
                 <div>
                     <p-divider layout="vertical"></p-divider>
@@ -124,14 +122,17 @@
                             </td>
                             <td>
                                 <div class="flex">
-                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="feliminar(venta)"></button>
+                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="feliminarDetalle(detalleventa)"></button>
                                 </div>
                             </td>
                         </tr>
                     </ng-template>
                 </p-table>
+
+                <h5>Total {{ total }}</h5>
                 </div>
             </div>
+        </form>
             </ng-template>
             <ng-template pTemplate="footer">
                 <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="ocultar()"></button>
